@@ -1,12 +1,11 @@
 #import JSON to be able to store data
 import json
-#------DATA SAVING------
-#Function to save students to file with JSON
+
+
+#DATA STORAGE FUNCTIONS
 def save_students(students):
     with open("students.json", "w") as file:
         json.dump(students, file)
-
-#Load students from the file 
 def load_students():
     try:
         #Try to open and read the file
@@ -16,16 +15,23 @@ def load_students():
         #if it doesnt exist yet
         return []
 
-
-
-#------MAIN FUNCTIONS------
-#A list that will store the dictionaries of students
 students = load_students()
-#creating a function to add students to the list
+
+# INPUT FUNCTIONS
+#function to get int numbers from input
+def get_number_input(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+            return value
+        except:
+            print('Please enter a valid number')
+
+#FEATURES FUNCTIONS
 def add_student():
     name = input("Enter student name: ")
-    age = input("Enter age: ")
-    score = input("Enter score: ")
+    age = get_number_input("Enter age: ")
+    score = get_number_input("Enter score: ")
     #This dictionary will take the values of the inputs
     student = {
         "name": name,
@@ -37,54 +43,74 @@ def add_student():
     #save the students to the file 
     save_students(students)
     print("Student added!\n")
-
 #a new function to view all the students
 def view_students():
-    for student in students:
-        print(f'Name: {student["name"]}, Age: {student["age"]}, Score: {student["score"]}')
-    print()
+    if len(students) == 0:
+        print("No students available\n")
+        return
+    
+    print('\n--- Student List ---')
 
+    for i, student in enumerate(students, start=1):
+        print(f'{i}. Name: {student["name"]}, Age: {student["age"]}, Score: {student["score"]}')
+    print()
 #a function to update students details
 def update_student():
-    name_to_update = input('Enter name of student to update')
-
-    found = False  
-
-    for student in students:
-        if student["name"] == name_to_update:
-            found = True
-
-            #asking for new data
-            new_name = input('Enter new name (leave blank to keep current): ')
-            new_age = int(input('Enter new age (leave blank to keep current): '))
-            new_score = int(input('Enter new score (leave blank to keep current): '))
-
-            #Update dictionary if user typed something
-            if new_name != "":
-                student["name"] = new_name
-        
-            if new_age != "":
-                student["age"] = int(new_age)
-
-            if new_score != "":
-                student["score"] = int(new_score)
-
-            print('Student updated!\n')
-            break
     
-    #handling 'not found'
-    if not found:
-        print('Student not found\n')
+    if len(students) == 0:
+        print("No students available\n")
+        return
+    
+    view_students()
+    
+    index = get_number_input("Enter student number to update: ")
+    
+    if 1 <= index <= len(students):
+        student = students[index - 1]
+        
+        print(f"Updating {student['name']}")
+        
+        new_name = input("Enter new name (leave blank to keep current): ")
+        new_age = input("Enter new age (leave blank to keep current): ")
+        new_score = input("Enter new score (leave blank to keep current): ")
+        
+        if new_name != "":
+            student["name"] = new_name
+        
+        if new_age != "":
+            student["age"] = int(new_age)
+        
+        if new_score != "":
+            student["score"] = int(new_score)
+        
+        print("Student updated!\n")
+        save_students(students)
+    
+    else:
+        print("Invalid number\n")
+#Delete students
+def delete_student():
 
-    save_students(students)
+    if len(students) == 0:
+        print('No students to delete\n')
+        return
+    
+    view_students()
 
+    index = get_number_input("Enter student number to delete: ")
 
+    if 1 <= index <= len(students):
+        removed = students.pop(index - 1)
+        print(f'{removed["name"]} deleted!\n')
+        save_students(students)
 
+    else:
+        print('Invalid number\n')
 
-#------MAIN MENU------
-#creating the main menu 
+#MENU
 def menu():
     while True:
+        print('\n=== Student Manager ===')
         print('1. Add Student')
         print('2. View Students')
         print('3. Delete a student')
@@ -120,6 +146,5 @@ def menu():
         else:
             print('Invalid choice\n')
 
-
-#running the programm
+#RUNNING THE PROGRAMM
 menu()
