@@ -47,27 +47,36 @@ def view_students():
 #a function to update students details
 def update_student():
     name_to_update = input('Enter name of student to update')
+
     found = False  
+
     for student in students:
         if student["name"] == name_to_update:
             found = True
-            new_name = input('Enter new name: ')
-            new_age = int(input('Enter new age: '))
-            new_score = int(input('Enter new score: '))
 
-            #Update dictionary
-            student["name"] = new_name
-            student["age"] = new_age
-            student["score"] = new_score
+            #asking for new data
+            new_name = input('Enter new name (leave blank to keep current): ')
+            new_age = int(input('Enter new age (leave blank to keep current): '))
+            new_score = int(input('Enter new score (leave blank to keep current): '))
+
+            #Update dictionary if user typed something
+            if new_name != "":
+                student["name"] = new_name
+        
+            if new_age != "":
+                student["age"] = int(new_age)
+
+            if new_score != "":
+                student["score"] = int(new_score)
 
             print('Student updated!\n')
             break
+    
+    #handling 'not found'
+    if not found:
+        print('Student not found\n')
 
-        #handling 'not found'
-        if not found:
-            print('Student not found\n')
-
-        save_students(students)
+    save_students(students)
 
 
 
